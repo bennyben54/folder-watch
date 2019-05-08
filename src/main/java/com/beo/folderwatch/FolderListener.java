@@ -26,20 +26,18 @@ public class FolderListener implements FileChangeListener {
     @Override
     public void onChange(final Set<ChangedFiles> changeSet) {
         synchronized (folderWatched) {
-        changeSet.forEach(c -> c.forEach(d -> {
-                if (folderWatched.list().length > threshold) {
-                    List<File> files = Arrays.asList(folderWatched.listFiles());
-                    files.sort((a, b) -> {
-                        long diff = a.lastModified() - b.lastModified();
-                        if (diff == 0) {
-                            return 0;
-                        }
-                        return diff < 0 ? -1 : 1;
-                    });
-                    files.subList(0, toDelete).stream().forEach(f -> f.delete());
-                    log.info(String.format("DELETED %d files of '%s'", toDelete, folderWatched.toString()));
-                }
-            }));
+            if (folderWatched.list().length > threshold) {
+                List<File> files = Arrays.asList(folderWatched.listFiles());
+                files.sort((a, b) -> {
+                    long diff = a.lastModified() - b.lastModified();
+                    if (diff == 0) {
+                        return 0;
+                    }
+                    return diff < 0 ? -1 : 1;
+                });
+                files.subList(0, toDelete).stream().forEach(f -> f.delete());
+                log.info(String.format("DELETED %d files in folder '%s'", toDelete, folderWatched.toString()));
+            }
         }
     }
 
