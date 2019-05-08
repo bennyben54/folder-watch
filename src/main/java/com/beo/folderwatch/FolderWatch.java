@@ -34,23 +34,21 @@ public class FolderWatch implements FileChangeListener {
 	@Override
 	public void onChange(final Set<ChangedFiles> changeSet) {
 		synchronized (changeSet) {
-			changeSet.forEach(c -> c.forEach(d -> {
-				if (folderWatched.list().length > threshold) {
-					List<File> files = Arrays.asList(folderWatched.listFiles());
-					files.sort((a, b) -> {
-						long diff = a.lastModified() - b.lastModified();
-						if (diff == 0) {
-							return 0;
-						}
-						return diff < 0 ? -1 : 1;
-					});
-					files.subList(0, threshold / 2).stream().forEach(f -> {
-						f.delete();
-					});
-				}
-				System.out.println(
-						String.format("DELETED %d oldest files in '%s'", threshold / 2, folderWatched.toString()));
-			}));
+			if (folderWatched.list().length > threshold) {
+				List<File> files = Arrays.asList(folderWatched.listFiles());
+				files.sort((a, b) -> {
+					long diff = a.lastModified() - b.lastModified();
+					if (diff == 0) {
+						return 0;
+					}
+					return diff < 0 ? -1 : 1;
+				});
+				files.subList(0, threshold / 2).stream().forEach(f -> {
+					f.delete();
+				});
+			}
+			System.out
+					.println(String.format("DELETED %d oldest files in '%s'", threshold / 2, folderWatched.toString()));
 		}
 	}
 
