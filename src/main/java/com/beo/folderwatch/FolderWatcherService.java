@@ -2,8 +2,6 @@ package com.beo.folderwatch;
 
 import lombok.Getter;
 import lombok.extern.java.Log;
-import lombok.extern.log4j.Log4j;
-import org.apache.logging.log4j.Logger;
 import org.springframework.boot.devtools.filewatch.FileSystemWatcher;
 import org.springframework.boot.devtools.filewatch.FileSystemWatcherFactory;
 
@@ -11,16 +9,11 @@ import java.io.File;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * 8 mai 2019
- *
- * @author bennyben54
- */
+
 @Log
 @Getter
 public class FolderWatcherService extends FileSystemWatcher implements FileSystemWatcherFactory {
@@ -33,6 +26,8 @@ public class FolderWatcherService extends FileSystemWatcher implements FileSyste
 
 
     public FolderWatcherService(List<String> parameters) {
+        super(true, Duration.of(2000, ChronoUnit.MILLIS),
+                Duration.of(500, ChronoUnit.MILLIS));
         initParameters(parameters);
     }
 
@@ -56,9 +51,7 @@ public class FolderWatcherService extends FileSystemWatcher implements FileSyste
     }
 
     private FolderWatcherService init() {
-        FileSystemWatcher fileSystemWatcher = new FileSystemWatcher(true, Duration.of(2000, ChronoUnit.MILLIS),
-                Duration.of(500, ChronoUnit.MILLIS));
-        foldersToWatch.forEach(folderToWatch -> addFolderListener(fileSystemWatcher, folderToWatch, threshold));
+        foldersToWatch.forEach(folderToWatch -> addFolderListener(this, folderToWatch, threshold));
         return this;
     }
 
@@ -70,7 +63,7 @@ public class FolderWatcherService extends FileSystemWatcher implements FileSyste
     private void addFolderListener(final FileSystemWatcher fileSystemWatcher, final String folderToWatch, int threshold) {
         File folder = new File(folderToWatch);
         fileSystemWatcher.addSourceFolder(folder);
-        fileSystemWatcher.addListener(new FolderWatch(folder, threshold));
+        fileSystemWatcher.addListener(new FolderListener(folder, threshold));
     }
 
 
