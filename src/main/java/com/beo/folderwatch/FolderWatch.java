@@ -45,10 +45,11 @@ public class FolderWatch implements FileChangeListener {
 						return diff < 0 ? -1 : 1;
 					});
 					files.subList(0, threshold / 2).stream().forEach(f -> {
-						System.out.println("DELETING " + f.toString());
 						f.delete();
 					});
 				}
+				System.out.println(
+						String.format("DELETED %d oldest files in '%s'", threshold / 2, folderWatched.toString()));
 			}));
 		}
 	}

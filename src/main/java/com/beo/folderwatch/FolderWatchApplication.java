@@ -47,7 +47,7 @@ public class FolderWatchApplication {
 	private void addFolderListener(final FileSystemWatcher fileSystemWatcher, final String folderToWatch) {
 		File folder = new File(folderToWatch);
 		fileSystemWatcher.addSourceFolder(folder);
-		fileSystemWatcher.addListener(new FolderWatch(folder, 100));
+		fileSystemWatcher.addListener(new FolderWatch(folder, 50));
 	}
 
 }
