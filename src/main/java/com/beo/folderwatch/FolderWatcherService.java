@@ -32,7 +32,7 @@ public class FolderWatcherService extends FileSystemWatcher implements FileSyste
     }
 
     private void initParameters(List<String> parameters) {
-        log.info(String.format("parameter [size, values] = [%d, %s ]", parameters.size(), parameters.toString()));
+        log.info(String.format("parameter [size, values] = [%d, %s]", parameters.size(), parameters.toString()));
         Optional<String> first = parameters.stream().findFirst();
         if (first.isPresent()) {
             try {
@@ -55,11 +55,6 @@ public class FolderWatcherService extends FileSystemWatcher implements FileSyste
         return this;
     }
 
-    /**
-     * @param fileSystemWatcher
-     * @param folderToWatch
-     * @param threshold
-     */
     private void addFolderListener(final FileSystemWatcher fileSystemWatcher, final String folderToWatch, int threshold) {
         File folder = new File(folderToWatch);
         fileSystemWatcher.addSourceFolder(folder);

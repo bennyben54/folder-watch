@@ -13,14 +13,12 @@ import java.util.Set;
 public class FolderListener implements FileChangeListener {
 
     private int threshold;
-    private int toDelete;
     private final File folderWatched;
 
     public FolderListener(final File folderWatched, final int threshold) {
         this.threshold = threshold;
         this.folderWatched = folderWatched;
-        this.toDelete = threshold - (threshold / 4);
-        log.info(String.format("FolderListener [%d, %d, %s]", threshold, toDelete, folderWatched));
+        log.info(String.format("FolderListener [%d, %s]", threshold, folderWatched));
     }
 
     @Override
@@ -28,6 +26,7 @@ public class FolderListener implements FileChangeListener {
         synchronized (folderWatched) {
             if (folderWatched.list().length > threshold) {
                 List<File> files = Arrays.asList(folderWatched.listFiles());
+                int toDelete = computeFilesToDelete(files);
                 files.sort((a, b) -> {
                     long diff = a.lastModified() - b.lastModified();
                     if (diff == 0) {
@@ -36,9 +35,14 @@ public class FolderListener implements FileChangeListener {
                     return diff < 0 ? -1 : 1;
                 });
                 files.subList(0, toDelete).stream().forEach(f -> f.delete());
-                log.info(String.format("DELETED %d files in folder '%s'", toDelete, folderWatched.toString()));
+                log.info(String.format("DELETED [%d] files in folder [%s]", toDelete, folderWatched.toString()));
             }
         }
+    }
+
+    private int computeFilesToDelete(List<File> files) {
+        int size = files.size();
+        return size - (size / 4);
     }
 
 }
